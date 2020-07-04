@@ -6,7 +6,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import org.unix4j.Unix4j;
 
 public class GetFilterLogs {
 
@@ -19,7 +18,7 @@ public class GetFilterLogs {
 
     List<String> filterLogs = getFilteredLog(filePath, "4667");
     List<String> fatelExceptions = FindLogs.findFetalExceptions(filterLogs);
-    FindLogs.stacktraces(fatelExceptions,filterLogs);
+    FindLogs.stacktraces(fatelExceptions, filterLogs);
 
 
   }
@@ -49,7 +48,6 @@ public class GetFilterLogs {
     return filteredLines;
 
   }
-
 
 
 }
