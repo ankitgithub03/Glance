@@ -7,21 +7,19 @@ import java.util.stream.Collectors;
 
 public class FindLogs {
 
-  static HashMap<String, Integer> uniqueFetal_exception = new HashMap<>();
-  static HashMap<Integer, StringBuilder> unique_stacktrace = new HashMap<>();
-  static HashMap<String, Long> unique_error_logs = new HashMap<>();
+  HashMap<String, Integer> uniqueFetal_exception = new HashMap<>();
+  HashMap<Integer, StringBuilder> unique_stacktrace = new HashMap<>();
+  HashMap<String, Long> unique_error_logs = new HashMap<>();
 
 
-  public static List<String> findFetalExceptions(List<String> filterlogs) {
+  public List<String> findFetalExceptions(List<String> filterlogs) {
     List<String> exceptions = filterlogs.stream().filter(l -> l.contains("FATAL EXCEPTION"))
         .collect(Collectors.toList());
     List<String> fetal_exceptions = new ArrayList<>();
-//    System.out.println(exceptions);
     for (String txt : exceptions) {
       int lineNumber = filterlogs.indexOf(txt);
       int exceptionLineNumber = lineNumber + 2;
       String e = filterlogs.get(exceptionLineNumber);
-//      System.out.println("exception: \n" + e);
       String pattern = ".+[A-Z]+\\s+[\\w]+:+\\s";
       String exception_msg = e.split(pattern)[1].trim();
       if (uniqueFetal_exception.containsKey(exception_msg)) {
@@ -35,14 +33,11 @@ public class FindLogs {
     System.out.println("=================\n");
     System.out.println("Exception Message| # of Occurrences");
     uniqueFetal_exception.forEach((key, value) -> System.out.println(key + " |" + value));
-
-//    System.out.println("-----------");
-//    System.out.println(fetal_exceptions);
     return fetal_exceptions;
   }
 
 
-  public static void stacktraces(List<String> fetal_exceptions, List<String> filterlogs) {
+  public void findStacktrace(List<String> fetal_exceptions, List<String> filterlogs) {
 
     int counter = 0;
     for (String txt : fetal_exceptions) {
@@ -71,19 +66,19 @@ public class FindLogs {
   }
 
 
-  public static void findErrors(List<String> filterlogs){
-    String pattern = ".+\\s+E\\s+[\\w]+\\s*:\\s+";
+  public void findErrors(List<String> filterlogs) {
+//    String pattern = ".+\\s+E\\s+[\\w]+\\s*:\\s+";
+    String pattern = ".+\\s+E\\s+[\\w]+(:|\\s+:)+(?!\\s+at)";
     Pattern logPattern = Pattern.compile(pattern);
     unique_error_logs = (HashMap<String, Long>) filterlogs.stream().filter(logPattern.asPredicate())
-        .map(l->l.split(pattern)[1])
-        .filter(l->!l.isEmpty()).collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));
+        .map(l -> l.split(pattern)[1])
+        .filter(l -> !l.isEmpty())
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
     System.out.println("\n\nErrors");
     System.out.println("==============\n");
-    unique_error_logs.forEach((k,v) -> System.out.println(k + " | " + v));
+    System.out.println("Error Message| # of Occurrences");
+    unique_error_logs.forEach((k, v) -> System.out.println(k + " | " + v));
   }
 
-  public static void searchValue(List<String> filterlogs, String search){
 
-
-  }
 }
