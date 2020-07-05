@@ -19,6 +19,7 @@ public class GetFilterLogs {
     List<String> filterLogs = getFilteredLog(filePath, "4667");
     List<String> fatelExceptions = FindLogs.findFetalExceptions(filterLogs);
     FindLogs.stacktraces(fatelExceptions, filterLogs);
+    FindLogs.findErrors(filterLogs);
 
 
   }

@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,7 @@ public class FindLogs {
 
   static HashMap<String, Integer> uniqueFetal_exception = new HashMap<>();
   static HashMap<Integer, StringBuilder> unique_stacktrace = new HashMap<>();
+  static HashMap<String, Long> unique_error_logs = new HashMap<>();
 
 
   public static List<String> findFetalExceptions(List<String> filterlogs) {
@@ -66,5 +68,22 @@ public class FindLogs {
     System.out.println("\n\nStacktrace:");
     System.out.println("==============\n");
     unique_stacktrace.forEach((key, value) -> System.out.println("#" + key + ") " + value));
+  }
+
+
+  public static void findErrors(List<String> filterlogs){
+    String pattern = ".+\\s+E\\s+[\\w]+\\s*:\\s+";
+    Pattern logPattern = Pattern.compile(pattern);
+    unique_error_logs = (HashMap<String, Long>) filterlogs.stream().filter(logPattern.asPredicate())
+        .map(l->l.split(pattern)[1])
+        .filter(l->!l.isEmpty()).collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));
+    System.out.println("\n\nErrors");
+    System.out.println("==============\n");
+    unique_error_logs.forEach((k,v) -> System.out.println(k + " | " + v));
+  }
+
+  public static void searchValue(List<String> filterlogs, String search){
+
+
   }
 }
